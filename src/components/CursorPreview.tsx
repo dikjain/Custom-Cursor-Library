@@ -119,6 +119,48 @@ export function CursorPreview({ cursor }: CursorPreviewProps) {
             }
           });
         }
+          
+        if ('${cursor.id}' === 'starburst-trail') {
+          const starbursts = [];
+          container.addEventListener('mousemove', (e) => {
+            const rect = container.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            if (cursorElement) {
+              cursorElement.style.left = x + 'px';
+              cursorElement.style.top = y + 'px';
+            }
+
+            const starburst = document.createElement('div');
+            starburst.classList.add('starburst');
+            starburst.style.left = x + 'px';
+            starburst.style.top = y + 'px';
+            starburst.style.transform = 'scale(1)';
+            
+            container.appendChild(starburst);
+            starbursts.push(starburst);
+
+            if (starbursts.length > 15) {
+              const oldest = starbursts.shift();
+              if (oldest) oldest.remove();
+            }
+
+            starbursts.forEach((sb, index) => {
+              sb.style.transform = \`scale(\${1 - index * 0.1})\`;
+            });
+
+            setTimeout(() => {
+              starburst.style.opacity = '0';
+              starburst.style.transform = 'scale(0.5)';
+              setTimeout(() => {
+                if (container.querySelectorAll('.starburst').length > 1) {
+                  starburst.remove();
+                }
+              }, 500);
+            }, 500);
+          });
+        }
 
         container.addEventListener('mousemove', (e) => {
           if (!isHovering || !cursorElement) return;
@@ -148,4 +190,8 @@ export function CursorPreview({ cursor }: CursorPreviewProps) {
       className="w-full h-64 bg-black/70 rounded-lg relative overflow-hidden cursor-none"
     />
   );
+
+
 }
+
+

@@ -1,5 +1,6 @@
 import { CursorConfig } from '../types/cursor';
 
+
 const cursorPreviewCode = (cursor:any) => `
     (function() {
       const container = document.getElementById('${cursor.id}');
@@ -98,6 +99,37 @@ const cursorPreviewCode = (cursor:any) => `
           }
         });
       }
+
+      if ('${cursor.id}' === 'starburst-trail') {
+        container.addEventListener('mousemove', (e) => {
+          const rect = container.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+
+          if (cursorElement) {
+            cursorElement.style.left = x + 'px';
+            cursorElement.style.top = y + 'px';
+          }
+
+          const starburst = document.createElement('div');
+          starburst.classList.add('starburst');
+          starburst.style.left = x + 'px';
+          starburst.style.top = y + 'px';
+          
+          container.appendChild(starburst);
+    
+          setTimeout(() => {
+            starburst.style.opacity = '0';
+            starburst.style.transform = 'scale(0.5)';
+            setTimeout(() => {
+              if (container.querySelectorAll('.starburst').length > 1) {
+                starburst.remove();
+              }
+            }, 500);
+          }, 500);
+        });
+      }
+
 
       container.addEventListener('mousemove', (e) => {
         if (!isHovering || !cursorElement) return;
@@ -209,6 +241,64 @@ const cursorPreviewCodeGiveCode = (cursor:any) =>
             createSpark(x, y);
           }
         });
+      }
+      if ('${cursor.id}' === 'starburst-trail') {
+        container.addEventListener('mousemove', (e) => {
+          const rect = container.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+
+          if (cursorElement) {
+            cursorElement.style.left = x + 'px';
+            cursorElement.style.top = y + 'px';
+          }
+
+          const starburst = document.createElement('div');
+          starburst.classList.add('starburst');
+          starburst.style.left = x + 'px';
+          starburst.style.top = y + 'px';
+          
+          container.appendChild(starburst);
+    
+          setTimeout(() => {
+            starburst.style.opacity = '0';
+            starburst.style.transform = 'scale(0.5)';
+            setTimeout(() => {
+              if (container.querySelectorAll('.starburst').length > 1) {
+                starburst.remove();
+              }
+            }, 500);
+          }, 500);
+        });
+      }
+
+      if ('${cursor.id}' === 'shimmering-star') {
+        container.addEventListener('mousemove', (e) => {
+          const rect = container.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+
+          if (cursorElement) {
+            cursorElement.style.left = x + 'px';
+            cursorElement.style.top = y + 'px';
+          }
+
+          const star = document.createElement('div');
+          star.className = 'glowing-star';
+          star.style.left = x + 'px';
+          star.style.top = y + 'px';
+          
+          container.appendChild(star);
+    
+          setTimeout(() => {
+            star.style.opacity = '0';
+            star.style.transform = 'scale(0.5)';
+            setTimeout(() => {
+              star.remove();
+            }, 500);
+          }, 500);
+        });
+      }
       }
 
       container.addEventListener('mousemove', (e) => {
@@ -819,6 +909,103 @@ parts.forEach(part => {
     `,
     js: cursorPreviewCode({ id: 'neon-crystal-cursor' }),
     giveCode: cursorPreviewCodeGiveCode({ id: 'neon-crystal-cursor' })
+  },
+  {
+    id: 'starburst-trail',
+    name: 'Starburst Trail',
+    description: 'A cursor with a trail of starbursts that follow its movement',
+    html: '<div class="starburst-trail"></div>',
+    css: `.starburst-trail {
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(45deg, #ffdd00, #ff4500);
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  animation: starburstGlow 1.5s infinite alternate, starburstRotate 2s infinite linear;
+}
+@keyframes starburstGlow {
+  0% { opacity: 0.8; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.2); }
+  100% { opacity: 0.8; transform: scale(1); }
+}
+@keyframes starburstRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.starburst {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  background: linear-gradient(45deg, #ffdd00, #ff4500);
+  pointer-events: none;
+  z-index: 9999;
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+.starburst-trail::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: radial-gradient(circle, #ffffff, transparent);
+  border-radius: 50%;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  animation: starburstAppear 1s infinite;
+}
+@keyframes starburstAppear {
+  0% { opacity: 0; transform: translateY(0) scale(0.5); }
+  50% { opacity: 1; transform: translateY(-10px) scale(1); }
+  100% { opacity: 0; transform: translateY(-20px) scale(0.5); }
+}`,
+    js: cursorPreviewCode({ id: 'starburst-trail' }),
+    giveCode: cursorPreviewCodeGiveCode({ id: 'starburst-trail' })
+  },
+  {
+    id: 'shimmering-star',
+    name: 'Shimmering Star',
+    description: 'A cursor with a shimmering star effect that changes color',
+    html: '<div class="shimmering-star"></div>',
+    css: `.shimmering-star {
+  width: 20px;
+  height: 20px;
+  background: radial-gradient(circle, #ffffff, #ff00ff, transparent);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  animation: shimmer 2s infinite alternate;
+}
+@keyframes shimmer {
+  0% { box-shadow: 0 0 10px #ffffff, 0 0 20px #ff00ff; }
+  50% { box-shadow: 0 0 15px #ff00ff, 0 0 30px #ffffff; }
+  100% { box-shadow: 0 0 10px #ffffff, 0 0 20px #ff00ff; }
+}
+.glowing-star {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: radial-gradient(circle, #ffffff, #ff00ff, transparent);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}`,
+    js: cursorPreviewCode({ id: 'shimmering-star' }),
+    giveCode: cursorPreviewCodeGiveCode({ id: 'shimmering-star' })
   }
+  
 ];
+
+
+
+
+
+
+
+
 
