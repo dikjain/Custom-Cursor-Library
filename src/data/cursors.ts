@@ -63,6 +63,40 @@ const cursorPreviewCode = (cursor:any) => `
             }, 500);
           }, 0);
         });
+                if ('${cursor.id}' === 'light-saber') {
+          const greenDots = [];
+          container.addEventListener('mousemove', (e) => {
+            const rect = container.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const randomOffsetX = (Math.random() - 0.5) * 30; // Random offset between -30 and 30
+            const randomOffsetY = (Math.random() - 0.5) * 30; // Random offset between -30 and 30
+
+            const greenDot = document.createElement('div');
+            greenDot.classList.add('green-dot');
+            greenDot.style.left = (x + randomOffsetX) + 'px';
+            greenDot.style.top = (y + randomOffsetY) + 'px';
+            greenDot.style.width = '5px';
+            greenDot.style.height = '5px';
+            greenDot.style.backgroundColor = 'green';
+            greenDot.style.borderRadius = '50%';
+            greenDot.style.position = 'absolute';
+            greenDot.style.boxShadow = '0 0 5px green';
+            container.appendChild(greenDot);
+            greenDots.push(greenDot);
+            greenDot.style.opacity = '0.5';
+            greenDot.style.transform = 'translate(-30px, -20px)';
+
+
+            if (greenDots.length > 2) {
+              const oldest = greenDots.shift();
+              if (oldest) oldest.remove();
+            }
+
+            setTimeout(() => greenDot.remove(), 500);
+          });
+        }
 
         centerCircle = document.createElement('div');
         centerCircle.classList.add('circle');
@@ -242,6 +276,16 @@ const cursorPreviewCodeGiveCode = (cursor:any) =>
           }
         });
       }
+
+      if ('${cursor.id}' === 'bubble-pop') {
+        container.addEventListener('click', () => {
+          const bubble = container.querySelector('.bubble-pop');
+          if (bubble) {
+            bubble.classList.add('pop');
+            setTimeout(() => bubble.classList.remove('pop'), 300);
+          }
+        });
+      }
       if ('${cursor.id}' === 'starburst-trail') {
         container.addEventListener('mousemove', (e) => {
           const rect = container.getBoundingClientRect();
@@ -271,6 +315,41 @@ const cursorPreviewCodeGiveCode = (cursor:any) =>
           }, 500);
         });
       }
+                if ('${cursor.id}' === 'light-saber') {
+          const greenDots = [];
+          container.addEventListener('mousemove', (e) => {
+            const rect = container.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const randomOffsetX = (Math.random() - 0.5) * 30; // Random offset between -30 and 30
+            const randomOffsetY = (Math.random() - 0.5) * 30; // Random offset between -30 and 30
+
+            const greenDot = document.createElement('div');
+            greenDot.classList.add('green-dot');
+            greenDot.style.left = (x + randomOffsetX) + 'px';
+            greenDot.style.top = (y + randomOffsetY) + 'px';
+            greenDot.style.width = '5px';
+            greenDot.style.height = '5px';
+            greenDot.style.backgroundColor = 'green';
+            greenDot.style.borderRadius = '50%';
+            greenDot.style.position = 'absolute';
+            greenDot.style.boxShadow = '0 0 5px green';
+            container.appendChild(greenDot);
+            greenDots.push(greenDot);
+            greenDot.style.opacity = '0.5';
+            greenDot.style.transform = 'translate(-30px, -20px)';
+
+
+            if (greenDots.length > 2) {
+              const oldest = greenDots.shift();
+              if (oldest) oldest.remove();
+            }
+
+            setTimeout(() => greenDot.remove(), 500);
+          });
+        }
+
 
       if ('${cursor.id}' === 'shimmering-star') {
         container.addEventListener('mousemove', (e) => {
@@ -636,6 +715,7 @@ export const cursors: CursorConfig[] = [
   position: absolute;
   border-radius: 50%;
   mix-blend-mode: screen;
+  animation: glitchOffset 0.2s infinite;
 }
 .red { background: #ff0000; }
 .green { background: #00ff00; }
@@ -645,11 +725,7 @@ export const cursors: CursorConfig[] = [
   33% { transform: translate(-2px, 2px); }
   66% { transform: translate(2px, -2px); }
 }`,
-    js: cursorPreviewCode({ id: 'glitch-cursor' }) + `
-    const parts = container.querySelectorAll('.glitch-part');
-parts.forEach(part => {
-  part.style.animation = 'glitchOffset 0.2s infinite';
-});`,
+    js: cursorPreviewCode({ id: 'glitch-cursor' }),
     giveCode: cursorPreviewCodeGiveCode({ id: 'glitch-cursor' })
   },
   {
@@ -965,7 +1041,36 @@ parts.forEach(part => {
     js: cursorPreviewCode({ id: 'starburst-trail' }),
     giveCode: cursorPreviewCodeGiveCode({ id: 'starburst-trail' })
   },
-  {
+   {
+    id: 'bubble-pop',
+    name: 'Bubble Pop',
+    description: 'Bubbles that pop on click',
+    html: '<div class="bubble-pop"></div>',
+    css: `.bubble-pop {
+  width: 30px;
+  height: 30px;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.2) 100%);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  animation: float 2s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-5px) scale(1.1); }
+}
+.pop {
+  animation: pop 0.3s ease-out forwards;
+}
+@keyframes pop {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(2); opacity: 0; }
+}`,
+    js: cursorPreviewCode({ id: 'bubble-pop' }),
+    giveCode: cursorPreviewCodeGiveCode({ id: 'bubble-pop' })
+  },
+   {
     id: 'shimmering-star',
     name: 'Shimmering Star',
     description: 'A cursor with a shimmering star effect that changes color',
@@ -997,15 +1102,144 @@ parts.forEach(part => {
 }`,
     js: cursorPreviewCode({ id: 'shimmering-star' }),
     giveCode: cursorPreviewCodeGiveCode({ id: 'shimmering-star' })
+  },
+  {
+    id: 'light-saber',
+    name: 'Light Saber',
+    description: 'A light saber cursor with a glowing effect',
+    html: '<div class="light-saber"></div>',
+    css: `.light-saber {
+  width: 5px;
+  height: 50px;
+  background: linear-gradient(to bottom, #00ff00, #000);
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transform: rotate(-45deg);
+  box-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00;
+  animation: saberGlow 1s infinite alternate;
+}
+@keyframes saberGlow {
+  0% { box-shadow: 0 -10px 10px #00ff00, 0 -10px 20px #00ff00; }
+  100% { box-shadow: 0 -10px 12px #00ff00, 0 -10px 24px #00ff00; }
+}`,
+    js: cursorPreviewCode({ id: 'light-saber' }),
+    giveCode: cursorPreviewCodeGiveCode({ id: 'light-saber' })
+  },
+  {
+    id: 'black-sun',
+    name: 'Black Sun',
+    description: 'A black sun cursor with a glowing effect',
+    html: '<div class="black-sun"></div>',
+    css: `.black-sun {
+  width: 10px;
+  height: 10px;
+  background: #000;
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  box-shadow: 0 0 5px #ff0000, 0 0 10px #00ff00, 0 0 15px #0000ff;
+  animation: blinkShadow 10s infinite reverse;
+}
+@keyframes blinkShadow {
+  0% { box-shadow: 0 0 10px #ff0000, 0 0 10px #00ff00, 0 0 10px #0000ff; }
+  10% { box-shadow: 0 0 10px #ff7f00, 0 0 10px #7fff00, 0 0 10px #7f00ff; }
+  20% { box-shadow: 0 0 10px #ffff00, 0 0 10px #00ffff, 0 0 10px #ff00ff; }
+  30% { box-shadow: 0 0 10px #ff007f, 0 0 10px #7f7f00, 0 0 10px #007fff; }
+  40% { box-shadow: 0 0 10px #ff7f7f, 0 0 10px #7fff7f, 0 0 10px #ff7fff; }
+  50% { box-shadow: 0 0 10px #7f00ff, 0 0 10px #00ff7f, 0 0 10px #ff007f; }
+  60% { box-shadow: 0 0 10px #7f7f7f, 0 0 10px #ff7f00, 0 0 10px #00ff7f; }
+  70% { box-shadow: 0 0 10px #7fff00, 0 0 10px #007fff, 0 0 10px #ff00ff; }
+  80% { box-shadow: 0 0 10px #ff00ff, 0 0 10px #00ffff, 0 0 10px #ff7f00; }
+  90% { box-shadow: 0 0 10px #00ff00, 0 0 10px #ff0000, 0 0 10px #7f00ff; }
+  100% { box-shadow: 0 0 10px #007fff, 0 0 10px #ff007f, 0 0 10px #7fff7f; }
+}`,
+    js: cursorPreviewCode({ id: 'black-sun' }),
+    giveCode: cursorPreviewCodeGiveCode({ id: 'black-sun' })
+  },
+  {
+    id: 'neon-trail',
+    name: 'Neon Trail',
+    description: 'A cursor with a trailing neon effect',
+    html: '<div class="neon-trail"></div>',
+    css: `.neon-trail {
+  width: 8px;
+  height: 8px;
+  background: #0ff;
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  box-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 30px #0ff;
+  animation: neonGlow 1s infinite alternate;
+}
+@keyframes neonGlow {
+  0% { box-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 30px #0ff; }
+  100% { box-shadow: 0 0 15px #0ff, 0 0 25px #0ff, 0 0 35px #0ff; }
+}`,
+    js: cursorPreviewCode({ id: 'neon-trail' }),
+    giveCode: cursorPreviewCodeGiveCode({ id: 'neon-trail' })
+  },
+  {
+    id: 'rainbow-sparkle-cursor',
+    name: 'Rainbow Sparkle Cursor',
+    description: 'A cursor with a rainbow sparkle effect that changes colors',
+    html: '<div class="rainbow-sparkle-cursor"></div>',
+    css: `.rainbow-sparkle-cursor {
+  width: 15px;
+  height: 15px;
+  background: linear-gradient(45deg, #ff0000, #ffa500, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  box-shadow: 0 0 10px #ff0000, 0 0 20px #ffa500, 0 0 30px #ffff00, 0 0 40px #00ff00, 0 0 50px #00ffff, 0 0 60px #0000ff, 0 0 70px #ff00ff;
+  animation: rainbowGlow 2s infinite alternate;
+}
+@keyframes rainbowGlow {
+  0% { box-shadow: 0 0 10px #ff0000, 0 0 20px #ffa500, 0 0 30px #ffff00, 0 0 40px #00ff00, 0 0 50px #00ffff, 0 0 60px #0000ff, 0 0 70px #ff00ff; }
+  100% { box-shadow: 0 0 15px #ff0000, 0 0 25px #ffa500, 0 0 35px #ffff00, 0 0 45px #00ff00, 0 0 55px #00ffff, 0 0 65px #0000ff, 0 0 75px #ff00ff; }
+}`,
+    js: cursorPreviewCode({ id: 'rainbow-sparkle-cursor' }),
+    giveCode: cursorPreviewCodeGiveCode({ id: 'rainbow-sparkle-cursor' })
+  },
+  {
+    id: 'galaxy-spiral-cursor',
+    name: 'Galaxy Spiral Cursor',
+    description: 'A cursor with a galaxy spiral effect that rotates and glows',
+    html: '<div class="galaxy-spiral-cursor"></div>',
+    css: `.galaxy-spiral-cursor {
+  width: 20px;
+  height: 20px;
+  background: conic-gradient(from 180deg at center, #ff00ff, #00ffff, #0000ff, #ff00ff);
+  border-radius: 0px 10px 10px 10px;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  animation: galaxyGlow 1.5s infinite alternate;
+}
+@keyframes galaxyGlow {
+  0% { box-shadow: 0 0 5px #ff00ff, 0 0 10px #00ffff, 0 0 15px #0000ff; }
+  100% { box-shadow: 0 0 7px #ff00ff, 0 0 12px #00ffff, 0 0 17px #0000ff; }
+}`,
+    js: cursorPreviewCode({ id: 'galaxy-spiral-cursor' }),
+    giveCode: cursorPreviewCodeGiveCode({ id: 'galaxy-spiral-cursor' })
+  },
+  {
+    id: 'emoji-cursor',
+    name: 'Emoji Cursor',
+    description: 'A cursor with a fun emoji effect',
+    html: '<div class="emoji-cursor">😀</div>',
+    css: `.emoji-cursor {
+  font-size: 20px;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+}`,
+    js: cursorPreviewCode({ id: 'emoji-cursor' }),
+    giveCode: cursorPreviewCodeGiveCode({ id: 'emoji-cursor' })
   }
-  
 ];
-
-
-
-
-
-
-
 
 

@@ -8,6 +8,7 @@ interface CursorCardProps {
   cursor: CursorConfig;
 }
 
+
 export function CursorCard({ cursor }: CursorCardProps) {
   const [showCode, setShowCode] = useState(false);
 
@@ -24,7 +25,8 @@ export function CursorCard({ cursor }: CursorCardProps) {
           <Code className="w-4 h-4" />
           {showCode ? 'Hide Code' : 'View Code'}
         </button>
-        
+
+
         {showCode && (
           <div className="mt-4 space-y-4">
             <div>

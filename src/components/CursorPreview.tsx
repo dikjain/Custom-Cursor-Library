@@ -162,6 +162,92 @@ export function CursorPreview({ cursor }: CursorPreviewProps) {
           });
         }
 
+        if ('${cursor.id}' === 'bubble-pop') {
+          container.addEventListener('click', () => {
+            const bubble = container.querySelector('.bubble-pop');
+            if (bubble) {
+              bubble.classList.add('pop');
+              setTimeout(() => bubble.classList.remove('pop'), 300);
+            }
+          });
+        }
+
+        if ('${cursor.id}' === 'light-saber') {
+          const greenDots = [];
+          container.addEventListener('mousemove', (e) => {
+            const rect = container.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const randomOffsetX = (Math.random() - 0.5) * 30; // Random offset between -30 and 30
+            const randomOffsetY = (Math.random() - 0.5) * 30; // Random offset between -30 and 30
+
+            const greenDot = document.createElement('div');
+            greenDot.classList.add('green-dot');
+            greenDot.style.left = (x + randomOffsetX) + 'px';
+            greenDot.style.top = (y + randomOffsetY) + 'px';
+            greenDot.style.width = '5px';
+            greenDot.style.height = '5px';
+            greenDot.style.backgroundColor = 'green';
+            greenDot.style.borderRadius = '50%';
+            greenDot.style.position = 'absolute';
+            greenDot.style.boxShadow = '0 0 5px green';
+            container.appendChild(greenDot);
+            greenDots.push(greenDot);
+            greenDot.style.opacity = '0.5';
+            greenDot.style.transform = 'translate(-30px, -20px)';
+
+
+            if (greenDots.length > 2) {
+              const oldest = greenDots.shift();
+              if (oldest) oldest.remove();
+            }
+
+            setTimeout(() => greenDot.remove(), 500);
+          });
+        }
+
+        if ('${cursor.id}' === 'neon-trail') {
+          container.addEventListener('mousemove', (e) => {
+            const rect = container.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const neonTrail = document.createElement('div');
+            neonTrail.classList.add('neon-trail');
+            neonTrail.style.left = x + 'px';
+            neonTrail.style.top = y + 'px';
+            neonTrail.style.width = '2px';
+            neonTrail.style.height = '2px';
+            
+            container.appendChild(neonTrail);
+
+            setTimeout(() => {
+              neonTrail.style.opacity = '0';
+              setTimeout(() => {
+                neonTrail.remove();
+              }, 500);
+            }, 500);
+          });
+        }
+
+        if ('${cursor.id}' === 'emoji-cursor') {
+          container.style.cursor = 'none';
+          const emojiElement = document.createElement('div');
+          emojiElement.style.position = 'absolute';
+          emojiElement.style.fontSize = '20px';
+          container.appendChild(emojiElement);
+
+          container.addEventListener('mousemove', (e) => {
+            const rect = container.getBoundingClientRect();
+            const emojis = ['😀', '😂', '😍', '😎', '🤔', '😜', '😱', '👍', '👎', '👏'];
+            const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+            emojiElement.style.left = (e.clientX - rect.left) + 'px';
+            emojiElement.style.top = (e.clientY - rect.top) + 'px';
+            emojiElement.innerText = randomEmoji;
+          });
+        }
+
         container.addEventListener('mousemove', (e) => {
           if (!isHovering || !cursorElement) return;
           const rect = container.getBoundingClientRect();
@@ -190,8 +276,4 @@ export function CursorPreview({ cursor }: CursorPreviewProps) {
       className="w-full h-64 bg-black/70 rounded-lg relative overflow-hidden cursor-none"
     />
   );
-
-
 }
-
-
