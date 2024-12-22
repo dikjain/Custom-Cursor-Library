@@ -1240,6 +1240,560 @@ export const cursors: CursorConfig[] = [
     js: cursorPreviewCode({ id: 'emoji-cursor' }),
     giveCode: cursorPreviewCodeGiveCode({ id: 'emoji-cursor' })
   }
+  ,
+  {
+    id: 'neon-pulse',
+    name: 'Neon Pulse',
+    description: 'A pulsating neon cursor with electric effects',
+    html: '<div class="neon-pulse"></div>',
+    css: `.neon-pulse {
+  width: 15px;
+  height: 15px;
+  background: #00ff00;
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  animation: neonPulse 1.5s infinite;
+}
+@keyframes neonPulse {
+  0% { transform: scale(1); box-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00; }
+  50% { transform: scale(1.2); box-shadow: 0 0 20px #00ff00, 0 0 30px #00ff00, 0 0 40px #00ff00; }
+  100% { transform: scale(1); box-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00; }
+}`,
+    js: cursorPreviewCode({ id: 'neon-pulse' }),
+    giveCode: cursorPreviewCodeGiveCode({ id: 'neon-pulse' })
+  },
+  {
+    id: 'pixel-trail',
+    name: 'Pixel Trail', 
+    description: 'A retro-style pixel trail that follows your cursor',
+    html: '<div class="pixel-trail"></div>',
+    css: `.pixel-trail {
+  width: 8px;
+  height: 8px;
+  background: #fff;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  box-shadow: 8px 0 0 #ff0000, 16px 0 0 #ff7700, 24px 0 0 #ffff00,
+              0 8px 0 #00ff00, 8px 8px 0 #0077ff, 16px 8px 0 #7700ff;
+  animation: pixelate 0.5s infinite step-end;
+}
+@keyframes pixelate {
+  50% { opacity: 0.7; }
+}`,
+    js: cursorPreviewCode({ id: 'pixel-trail' }),
+    giveCode: cursorPreviewCodeGiveCode({ id: 'pixel-trail' })
+  },
+  {
+    id: 'laser-beam',
+    name: 'Laser Beam',
+    description: 'A sci-fi laser beam cursor with targeting effects',
+    html: '<div class="laser-beam"><div class="crosshair"></div></div>',
+    css: `.laser-beam {
+  width: 30px;
+  height: 30px;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  border: 2px solid #ff0000;
+  border-radius: 50%;
+  animation: target 1s infinite;
+}
+.crosshair {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+.crosshair::before,
+.crosshair::after {
+  content: '';
+  position: absolute;
+  background: #ff0000;
+}
+.crosshair::before {
+  width: 2px;
+  height: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.crosshair::after {
+  width: 100%;
+  height: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+@keyframes target {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
+}`,
+    js: cursorPreviewCode({ id: 'laser-beam' }),
+    giveCode: cursorPreviewCodeGiveCode({ id: 'laser-beam' })
+  },
+  {
+    id: 'magic-dust',
+    name: 'Magic Dust',
+    description: 'Sparkling magic dust that trails your cursor movement',
+    html: '<div class="magic-dust"></div>',
+    css: `.magic-dust {
+  width: 12px;
+  height: 12px;
+  background: radial-gradient(circle at center, #fff, #ffd700);
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  border-radius: 50%;
+  filter: drop-shadow(0 0 6px #ffd700);
+  animation: sparkle 1s infinite;
+}
+@keyframes sparkle {
+  0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  25% { transform: scale(0.8) rotate(90deg); opacity: 0.8; }
+  50% { transform: scale(1.2) rotate(180deg); opacity: 1; }
+  75% { transform: scale(0.8) rotate(270deg); opacity: 0.8; }
+}`,
+    js: cursorPreviewCode({ id: 'magic-dust' }),
+    giveCode: cursorPreviewCodeGiveCode({ id: 'magic-dust' })
+  }
+  ,
+  {
+    id: 'ripple-wave',
+    name: 'Ripple Wave',
+    description: 'Creates expanding ripple waves with each click while leaving a glowing trail',
+    html: '<div class="ripple-wave"></div>',
+    css: `.ripple-wave {
+  width: 20px;
+  height: 20px;
+  background: rgba(77, 213, 255, 0.8);
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  border-radius: 50%;
+  box-shadow: 0 0 15px rgba(77, 213, 255, 0.6);
+}
+
+.ripple {
+  position: absolute;
+  border: 2px solid rgba(77, 213, 255, 0.8);
+  border-radius: 50%;
+  animation: rippleEffect 1s ease-out;
+  pointer-events: none;
+  
+}
+
+.trail-particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: rgba(77, 213, 255, 0.6);
+  border-radius: 50%;
+  pointer-events: none;
+  transition: all 0.5s ease;
+}
+
+@keyframes rippleEffect {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0.8;
+    
+  }
+  100% {
+    width: 100px;
+    height: 100px;
+    opacity: 0;
+  }
+}`,
+    js: `
+      let particles = [];
+      
+      container.addEventListener('click', (e) => {
+        const rect = container.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const ripple = document.createElement('div');
+        ripple.className = 'ripple';
+        ripple.style.transform = 'translate(-50%, -50%)';
+        ripple.style.left = x + 'px';
+        ripple.style.top = y  + 'px';
+        container.appendChild(ripple);
+
+        setTimeout(() => ripple.remove(), 1000);
+      });
+
+      container.addEventListener('mousemove', (e) => {
+        const rect = container.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        if (cursorElement) {
+          cursorElement.style.left = x + 'px';
+          cursorElement.style.top = y + 'px';
+        }
+
+        const particle = document.createElement('div');
+        particle.className = 'trail-particle';
+        particle.style.left = x + 'px';
+        particle.style.top = y + 'px';
+        container.appendChild(particle);
+        particles.push(particle);
+        
+        // Remove particle after 2 seconds regardless of mousemove
+        setTimeout(() => {
+          if (particles.includes(particle)) {
+            const index = particles.indexOf(particle);
+            if (index > -1) {
+              particles.splice(index, 1);
+            }
+            particle.style.opacity = '0';
+            setTimeout(() => particle.remove(), 500);
+          }
+        }, 500);
+
+        particles.forEach((p, index) => {
+          const scale = 1 - (index * 0.05);
+          p.style.transform = \`scale(\${scale})\`;
+          p.style.opacity = scale;
+        });
+      });`,
+    giveCode: cursorPreviewCodeGiveCode({ id: 'ripple-wave' })
+  },
+  {
+    id: 'magnetic-field',
+    name: 'Magnetic Field',
+    description: 'Cursor that attracts and repels particles in a magnetic field effect',
+    html: '<div class="magnetic-field"></div>',
+    css: `.magnetic-field {
+  width: 30px;
+  height: 30px;
+  background: radial-gradient(circle at center, #ff00ff, transparent);
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
+}
+
+.magnetic-particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #ff00ff;
+  border-radius: 50%;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  opacity: 0.6;
+}`,
+    js: `
+        const particles = [];
+      const numParticles = 30;
+      let isRepelling = false;
+
+      // Create initial particles
+      for (let i = 0; i < numParticles; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'magnetic-particle';
+        particle.style.left = Math.random() * container.offsetWidth + 'px';
+        particle.style.top = Math.random() * container.offsetHeight + 'px';
+        container.appendChild(particle);
+        particles.push({
+          element: particle,
+          x: Math.random() * container.offsetWidth,
+          y: Math.random() * container.offsetHeight,
+          vx: 0,
+          vy: 0
+        });
+      }
+
+      container.addEventListener('mousedown', () => isRepelling = true);
+      container.addEventListener('mouseup', () => isRepelling = false);
+
+      container.addEventListener('mousemove', (e) => {
+        const rect = container.getBoundingClientRect();
+        const cursorX = e.clientX - rect.left;
+        const cursorY = e.clientY - rect.top;
+
+        if (cursorElement) {
+          cursorElement.style.left = cursorX + 'px';
+          cursorElement.style.top = cursorY + 'px';
+        }
+
+        particles.forEach(particle => {
+          const dx = particle.x - cursorX;
+          const dy = particle.y - cursorY;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          const force = isRepelling ? 1 : -1;
+          
+          if (distance < 100) {
+            const strength = (100 - distance) / 100 * force;
+            particle.vx += (dx / distance) * strength;
+            particle.vy += (dy / distance) * strength;
+          }
+
+          // Apply velocity and friction
+          particle.x += particle.vx;
+          particle.y += particle.vy;
+          particle.vx *= 0.95;
+          particle.vy *= 0.95;
+
+          // Keep particles within bounds
+          particle.x = Math.max(0, Math.min(container.offsetWidth, particle.x));
+          particle.y = Math.max(0, Math.min(container.offsetHeight, particle.y));
+
+          particle.element.style.left = particle.x + 'px';
+          particle.element.style.top = particle.y + 'px';
+        });
+      });`,
+    giveCode: cursorPreviewCodeGiveCode({ id: 'magnetic-field' })
+  },
+  {
+    id: 'portal-cursor',
+    name: 'Portal Cursor',
+    description: 'Creates swirling portal effects with teleporting particles',
+    html: '<div class="portal-cursor"></div>',
+    css: `.portal-cursor {
+  width: 40px;
+  height: 40px;
+  background: conic-gradient(from 0deg, #00ffff, #ff00ff, #00ffff);
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  border-radius: 50%;
+  animation: portalSpin 2s linear infinite;
+}
+
+.portal-particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #fff;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(2px);
+  opacity: 0.8;
+  transition: all 0.3s ease;
+}
+
+@keyframes portalSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.portal-flash {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.8), transparent);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}`,
+    js: `
+      const portalParticles = [];
+      let lastPortalPos = { x: 0, y: 0 };
+      let portalFlash = null;
+
+      // Create portal flash element
+      portalFlash = document.createElement('div');
+      portalFlash.className = 'portal-flash';
+      container.appendChild(portalFlash);
+
+      container.addEventListener('click', (e) => {
+        const rect = container.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        // Create teleport flash effect
+        portalFlash.style.opacity = '1';
+        setTimeout(() => portalFlash.style.opacity = '0', 300);
+
+        // Teleport all particles to new location
+        portalParticles.forEach(particle => {
+          const angle = Math.random() * Math.PI * 2;
+          const distance = Math.random() * 50;
+          const newX = x + Math.cos(angle) * distance;
+          const newY = y + Math.sin(angle) * distance;
+          
+          particle.element.style.transition = 'all 0.3s ease';
+          particle.element.style.left = newX + 'px';
+          particle.element.style.top = newY + 'px';
+          particle.x = newX;
+          particle.y = newY;
+        });
+      });
+
+        container.addEventListener('mousemove', (e) => {
+          const rect = container.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+
+          if (cursorElement) {
+            cursorElement.style.left = x + 'px';
+            cursorElement.style.top = y + 'px';
+          }
+
+        // Create new particles
+        if (portalParticles.length < 20) {
+          const particle = document.createElement('div');
+          particle.className = 'portal-particle';
+          container.appendChild(particle);
+          portalParticles.push({
+            element: particle,
+            x: x,
+            y: y,
+            angle: Math.random() * Math.PI * 2
+          });
+        }
+
+        // Update particle positions
+        portalParticles.forEach((particle, index) => {
+          particle.angle += 0.1;
+          const radius = 20 + (index * 1);
+          particle.x = x + Math.cos(particle.angle) * radius;
+          particle.y = y + Math.sin(particle.angle) * radius;
+          
+          particle.element.style.left = particle.x + 'px';
+          particle.element.style.top = particle.y + 'px';
+          particle.element.style.transform = \`scale(\${1 - index * 0.05})\`;
+        });
+
+        lastPortalPos = { x, y };
+      });`,
+    giveCode: cursorPreviewCodeGiveCode({ id: 'portal-cursor' })
+  },
+  {
+    id: 'quantum-particles',
+    name: 'Quantum Particles',
+    description: 'Quantum particles that orbit and react to cursor movement with wave effects',
+    html: '<div class="quantum-cursor"></div>',
+    css: `.quantum-cursor {
+  width: 20px;
+  height: 20px;
+  background: rgba(0, 255, 255, 0.8);
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  border-radius: 50%;
+  box-shadow: 0 0 15px cyan;
+}
+
+.quantum-particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: rgba(0, 255, 255, 0.6);
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(1px);
+  transition: transform 0.3s ease;
+}
+
+.wave-ring {
+  position: absolute;
+  border: 2px solid rgba(0, 255, 255, 0.3);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: quantumWave 1.5s ease-out;
+}
+
+@keyframes quantumWave {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0.8;
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    width: 100px;
+    height: 100px;
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}`,
+    js: `
+      const particles = [];
+      const maxParticles = 12;
+      let lastPos = { x: 0, y: 0 };
+      let waveTimeout = null;
+
+      const quantumCursor = container.querySelector('.quantum-cursor');
+      if (quantumCursor) {
+        const rect = container.getBoundingClientRect();
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        quantumCursor.style.left = centerX + 'px';
+        quantumCursor.style.top = centerY + 'px';
+      }
+
+      container.addEventListener('mousemove', (e) => {
+        const rect = container.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        // Move the main quantum cursor to follow the mouse
+        if (quantumCursor) {
+          quantumCursor.style.left = x + 'px';
+          quantumCursor.style.top = y + 'px';
+        }
+
+        // Create wave effect on rapid movement
+        const distance = Math.hypot(x - lastPos.x, y - lastPos.y);
+        if (distance > 30) {
+          if (!waveTimeout) {
+            const wave = document.createElement('div');
+            wave.className = 'wave-ring';
+            wave.style.left = x + 'px';
+            wave.style.top = y + 'px';
+            container.appendChild(wave);
+            
+            waveTimeout = setTimeout(() => {
+              wave.remove();
+              waveTimeout = null;
+            }, 1500);
+          }
+        }
+        
+        // Manage quantum particles
+        while (particles.length < maxParticles) {
+          const particle = document.createElement('div');
+          particle.className = 'quantum-particle';
+          container.appendChild(particle);
+          particles.push({
+            element: particle,
+            angle: Math.random() * Math.PI * 2,
+            speed: 0.05 + Math.random() * 0.05,
+            radius: 15 + Math.random() * 15
+          });
+        }
+
+        particles.forEach((particle, i) => {
+          particle.angle += particle.speed;
+          const radius = particle.radius + Math.sin(Date.now() / 1000) * 5;
+          const px = x + Math.cos(particle.angle) * radius;
+          const py = y + Math.sin(particle.angle) * radius;
+          
+          particle.element.style.left = px + 'px';
+          particle.element.style.top = py + 'px';
+          particle.element.style.transform = \`scale(\${1 - i * 0.05})\`;
+          particle.element.style.background = \`hsla(\${(Date.now() / 50 + i * 30) % 360}, 100%, 50%, 0.6)\`;
+        });
+
+        lastPos = { x, y };
+      });
+
+      container.addEventListener('mouseleave', () => {
+        if (quantumCursor) {
+          const rect = container.getBoundingClientRect();
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          quantumCursor.style.left = centerX + 'px';
+          quantumCursor.style.top = centerY + 'px';
+        }
+      });
+    `,
+    giveCode: cursorPreviewCodeGiveCode({ id: 'quantum-particles' })
+  }
 ];
-
-

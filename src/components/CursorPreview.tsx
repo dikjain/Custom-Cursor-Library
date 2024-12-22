@@ -248,6 +248,71 @@ export function CursorPreview({ cursor }: CursorPreviewProps) {
           });
         }
 
+        if ('${cursor.id}' === 'cosmic-nebula') {
+          const nebulaClouds = [];
+          const stardustParticles = [];
+          const maxClouds = 3;
+          const maxStardust = 20;
+          
+          function createNebula(x, y) {
+            const cloud = document.createElement('div');
+            cloud.className = 'nebula-cloud';
+            cloud.style.width = '100px';
+            cloud.style.height = '100px';
+            cloud.style.left = x + 'px';
+            cloud.style.top = y + 'px';
+            container.appendChild(cloud);
+            
+            setTimeout(() => {
+              cloud.style.opacity = '0';
+              setTimeout(() => cloud.remove(), 1000);
+            }, 2000);
+          }
+
+          container.addEventListener('mousemove', (e) => {
+            const rect = container.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+        
+            // Create nebula clouds
+            if (Math.random() < 0.1) {
+              createNebula(x, y);
+            }
+
+            // Manage stardust particles
+            while (stardustParticles.length < maxStardust) {
+              const stardust = document.createElement('div');
+              stardust.className = 'stardust';
+              container.appendChild(stardust);
+              stardustParticles.push({
+                element: stardust,
+                x: x,
+                y: y,
+                vx: (Math.random() - 0.5) * 3,
+                vy: (Math.random() - 0.5) * 3,
+                life: 1
+              });
+            }
+
+            // Update stardust particles
+            stardustParticles.forEach((particle, index) => {
+              particle.x += particle.vx;
+              particle.y += particle.vy;
+              particle.life -= 0.02;
+              
+              if (particle.life <= 0) {
+                particle.element.remove();
+                stardustParticles.splice(index, 1);
+                return;
+              }
+
+              particle.element.style.transform = \`translate(\${particle.x}px, \${particle.y}px)\`;
+              particle.element.style.opacity = particle.life;
+              particle.element.style.boxShadow = \`0 0 \${particle.life * 5}px white\`;
+            });
+          });
+        }
+
         container.addEventListener('mousemove', (e) => {
           if (!isHovering || !cursorElement) return;
           const rect = container.getBoundingClientRect();

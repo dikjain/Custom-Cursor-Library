@@ -9,6 +9,8 @@ interface CursorCardProps {
 }
 
 
+
+
 export function CursorCard({ cursor }: CursorCardProps) {
   const [showCode, setShowCode] = useState(false);
 
