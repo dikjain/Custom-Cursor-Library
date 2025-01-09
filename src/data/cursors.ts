@@ -759,7 +759,7 @@ export const cursors: CursorConfig[] = [
         height: 64px;
         background: radial-gradient(circle, rgba(255, 0, 255, 0.5) 0%, transparent 100%);
         filter: blur(12px);
-        opacity: 0.7;
+  opacity: 0.7;
         animation: trailPulse 1s ease-in-out infinite alternate;
         pointer-events: none;
         z-index: -1;
@@ -795,11 +795,11 @@ export const cursors: CursorConfig[] = [
     `,
     css: `
       .circle {
-        position: absolute;
+  position: absolute;
         width: 10px;
-        height: 10px;
+  height: 10px;
         border-radius: 50%;
-        pointer-events: none;
+  pointer-events: none;
         z-index: 9999;
         transition: opacity 0.5s ease-out, transform 0.5s ease-out;
       }
@@ -841,7 +841,7 @@ export const cursors: CursorConfig[] = [
         background: radial-gradient(circle, rgba(255, 140, 0, 0.6), transparent);
         transform: translate(-50%, -50%);
         filter: blur(10px);
-        opacity: 0.8;
+  opacity: 0.8;
         pointer-events: none;
         z-index: -1;
       }
@@ -1434,11 +1434,11 @@ export const cursors: CursorConfig[] = [
           cursorElement.style.top = y + 'px';
         }
 
-        const particle = document.createElement('div');
+          const particle = document.createElement('div');
         particle.className = 'trail-particle';
-        particle.style.left = x + 'px';
-        particle.style.top = y + 'px';
-        container.appendChild(particle);
+          particle.style.left = x + 'px';
+          particle.style.top = y + 'px';
+          container.appendChild(particle);
         particles.push(particle);
         
         // Remove particle after 2 seconds regardless of mousemove
@@ -1795,5 +1795,865 @@ export const cursors: CursorConfig[] = [
       });
     `,
     giveCode: cursorPreviewCodeGiveCode({ id: 'quantum-particles' })
+  },
+  {
+    id: 'stellar-particles',
+    name: 'Stellar Particles',
+    description: 'Stellar particles that orbit and react to cursor movement with starburst effects',
+    html: '<div class="stellar-cursor"></div>',
+    css: `.stellar-cursor {
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 215, 0, 0.8);
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  border-radius: 50%;
+  box-shadow: 0 0 15px gold;
+  animation: stellarPulse 1.5s infinite alternate;
+}
+
+.stellar-particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: rgba(255, 215, 0, 0.6);
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(1px);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.starburst-ring {
+  position: absolute;
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: starburstWave 1.5s ease-out;
+}
+
+@keyframes stellarPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 15px gold;
+  }
+  100% {
+    transform: scale(1.2);
+    box-shadow: 0 0 25px gold;
+  }
+}
+
+@keyframes starburstWave {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0.8;
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    width: 100px;
+    height: 100px;
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}`,
+    js: `
+      const particles = [];
+      const maxParticles = 12;
+      let lastPos = { x: 0, y: 0 };
+      let waveTimeout = null;
+
+      const stellarCursor = container.querySelector('.stellar-cursor');
+      if (stellarCursor) {
+        const rect = container.getBoundingClientRect();
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        stellarCursor.style.left = centerX + 'px';
+        stellarCursor.style.top = centerY + 'px';
+      }
+
+      container.addEventListener('mousemove', (e) => {
+        const rect = container.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        // Move the main stellar cursor to follow the mouse
+        if (stellarCursor) {
+          stellarCursor.style.left = x + 'px';
+          stellarCursor.style.top = y + 'px';
+        }
+
+        // Create starburst effect on rapid movement
+        const distance = Math.hypot(x - lastPos.x, y - lastPos.y);
+        if (distance > 30) {
+          if (!waveTimeout) {
+            const wave = document.createElement('div');
+            wave.className = 'starburst-ring';
+            wave.style.left = x + 'px';
+            wave.style.top = y + 'px';
+            container.appendChild(wave);
+            
+            waveTimeout = setTimeout(() => {
+              wave.remove();
+              waveTimeout = null;
+            }, 1500);
+          }
+        }
+        
+        // Manage stellar particles
+        while (particles.length < maxParticles) {
+          const particle = document.createElement('div');
+          particle.className = 'stellar-particle';
+          container.appendChild(particle);
+          particles.push({
+            element: particle,
+            angle: Math.random() * Math.PI * 2,
+            speed: 0.05 + Math.random() * 0.05,
+            radius: 15 + Math.random() * 15
+          });
+        }
+
+        particles.forEach((particle, i) => {
+          particle.angle += particle.speed;
+          const radius = particle.radius + Math.sin(Date.now() / 1000) * 5;
+          const px = x + Math.cos(particle.angle) * radius;
+          const py = y + Math.sin(particle.angle) * radius;
+          
+          particle.element.style.left = px + 'px';
+          particle.element.style.top = py + 'px';
+          particle.element.style.transform = \`scale(\${1 - i * 0.05})\`;
+          particle.element.style.opacity = (1 - i * 0.1).toString();
+        });
+
+        lastPos = { x, y };
+      });
+
+      container.addEventListener('mouseleave', () => {
+        if (stellarCursor) {
+          const rect = container.getBoundingClientRect();
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          stellarCursor.style.left = centerX + 'px';
+          stellarCursor.style.top = centerY + 'px';
+        }
+      });
+    `,
+    giveCode: cursorPreviewCodeGiveCode({ id: 'stellar-particles' })
+  },
+  {
+    id: 'nebula-particles',
+    name: 'Nebula Particles',
+    description: 'Nebula particles that orbit and react to cursor movement with cosmic effects',
+    html: '<div class="nebula-cursor"></div>',
+    css: `.nebula-cursor {
+  width: 20px;
+  height: 20px;
+  background: rgba(138, 43, 226, 0.8);
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  border-radius: 50%;
+  box-shadow: 0 0 15px blueviolet;
+  animation: nebulaPulse 1.5s infinite alternate;
+}
+
+.nebula-particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: rgba(138, 43, 226, 0.6);
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(1px);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.cosmic-ring {
+  position: absolute;
+  border: 2px solid rgba(138, 43, 226, 0.3);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: cosmicWave 1.5s ease-out;
+}
+
+@keyframes nebulaPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 15px blueviolet;
+  }
+  100% {
+    transform: scale(1.2);
+    box-shadow: 0 0 25px blueviolet;
+  }
+}
+
+@keyframes cosmicWave {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0.8;
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    width: 100px;
+    height: 100px;
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}`,
+    js: `
+      const particles = [];
+      const maxParticles = 12;
+      let lastPos = { x: 0, y: 0 };
+      let sparkleTimeout = null;
+
+      const nebulaCursor = container.querySelector('.nebula-cursor');
+      if (nebulaCursor) {
+        const rect = container.getBoundingClientRect();
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        nebulaCursor.style.left = centerX + 'px';
+        nebulaCursor.style.top = centerY + 'px';
+      }
+
+      container.addEventListener('mousemove', (e) => {
+        const rect = container.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        // Move the main nebula cursor to follow the mouse
+        if (nebulaCursor) {
+          nebulaCursor.style.left = x + 'px';
+          nebulaCursor.style.top = y + 'px';
+        }
+
+        // Create sparkle effect on rapid movement
+        const distance = Math.hypot(x - lastPos.x, y - lastPos.y);
+        if (distance > 30) {
+          if (!sparkleTimeout) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle-effect';
+            sparkle.style.left = x + 'px';
+            sparkle.style.top = y + 'px';
+            container.appendChild(sparkle);
+            
+            sparkleTimeout = setTimeout(() => {
+              sparkle.remove();
+              sparkleTimeout = null;
+            }, 1000);
+          }
+        }
+        
+        // Manage nebula particles
+        while (particles.length < maxParticles) {
+          const particle = document.createElement('div');
+          particle.className = 'nebula-particle';
+          container.appendChild(particle);
+          particles.push({
+            element: particle,
+            angle: Math.random() * Math.PI * 2,
+            speed: 0.05 + Math.random() * 0.05,
+            radius: 15 + Math.random() * 15
+          });
+        }
+
+        particles.forEach((particle, i) => {
+          particle.angle += particle.speed;
+          const radius = particle.radius + Math.sin(Date.now() / 1000) * 5;
+          const px = x + Math.cos(particle.angle) * radius;
+          const py = y + Math.sin(particle.angle) * radius;
+          
+          particle.element.style.left = px + 'px';
+          particle.element.style.top = py + 'px';
+          particle.element.style.transform = \`scale(\${1 - i * 0.05})\`;
+          particle.element.style.opacity = (1 - i * 0.1).toString();
+        });
+
+        lastPos = { x, y };
+      });
+
+      container.addEventListener('mouseleave', () => {
+        if (nebulaCursor) {
+          const rect = container.getBoundingClientRect();
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          nebulaCursor.style.left = centerX + 'px';
+          nebulaCursor.style.top = centerY + 'px';
+        }
+      });
+    `,
+    giveCode: cursorPreviewCodeGiveCode({ id: 'nebula-particles' })
+  }
+  ,
+  {
+    id: 'aurora-borealis',
+    name: 'Aurora Borealis',
+    description: 'Mesmerizing northern lights effect that follows cursor movement with shimmering waves',
+    html: '<div class="aurora-cursor"></div>',
+    css: `.aurora-cursor {
+  width: 20px;
+  height: 20px;
+  background: rgba(120, 255, 180, 0.8);
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  border-radius: 50%;
+  box-shadow: 0 0 15px #50ffa0;
+  animation: auroraPulse 2s infinite alternate;
+}
+
+.aurora-wave {
+  position: absolute;
+  width: 4px;
+  height: 20px;
+  background: linear-gradient(180deg, #50ffa0, #4287f5);
+  border-radius: 4px;
+  pointer-events: none;
+  filter: blur(2px);
+  opacity: 0;
+  animation: auroraFade 1.5s ease-out;
+}
+
+@keyframes auroraPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 15px #50ffa0;
+  }
+  100% {
+    transform: scale(1.2);
+    box-shadow: 0 0 25px #50ffa0;
+  }
+}
+
+@keyframes auroraFade {
+  0% {
+    height: 0;
+    opacity: 0.8;
+  }
+  50% {
+    height: 40px;
+    opacity: 0.6;
+  }
+  100% {
+    height: 20px;
+    opacity: 0;
+  }
+}`,
+    js: `
+      const waves = [];
+      let lastAuroraPos = { x: 0, y: 0 };
+
+      const auroraCursor = container.querySelector('.aurora-cursor');
+      if (auroraCursor) {
+        const rect = container.getBoundingClientRect();
+        auroraCursor.style.left = rect.width / 2 + 'px';
+        auroraCursor.style.top = rect.height / 2 + 'px';
+      }
+
+      container.addEventListener('mousemove', (e) => {
+        const rect = container.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        if (auroraCursor) {
+          auroraCursor.style.left = x + 'px';
+          auroraCursor.style.top = y + 'px';
+        }
+
+        if (Math.random() > 0.7) {
+          const wave = document.createElement('div');
+          wave.className = 'aurora-wave';
+          wave.style.left = x + 'px';
+          wave.style.top = y + 'px';
+          wave.style.transform = \`rotate(\${Math.random() * 360}deg)\`;
+          container.appendChild(wave);
+          waves.push(wave);
+
+          setTimeout(() => {
+            wave.remove();
+            waves.splice(waves.indexOf(wave), 1);
+          }, 1500);
+        }
+
+        lastAuroraPos = { x, y };
+      });
+
+      container.addEventListener('mouseleave', () => {
+        if (auroraCursor) {
+          const rect = container.getBoundingClientRect();
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          auroraCursor.style.left = centerX + 'px';
+          auroraCursor.style.top = centerY + 'px';
+        }
+      });
+
+      container.addEventListener('click', () => {
+        for (let i = 0; i < 12; i++) {
+          const wave = document.createElement('div');
+          wave.className = 'aurora-wave';
+          wave.style.left = lastAuroraPos.x + 'px';
+          wave.style.top = lastAuroraPos.y + 'px';
+          wave.style.transform = \`rotate(\${i * 30}deg)\`;
+          container.appendChild(wave);
+          waves.push(wave);
+
+          setTimeout(() => {
+            wave.remove();
+            waves.splice(waves.indexOf(wave), 1);
+          }, 1500);
+        }
+      });
+    `,
+    giveCode: cursorPreviewCodeGiveCode({ id: 'aurora-borealis' })
+  },
+  {
+    id: 'prismatic-aurora',
+    name: 'Prismatic Aurora',
+    description: 'A vibrant, multi-colored aurora effect with dynamic light trails and prismatic waves',
+    html: '<div class="prismatic-cursor"></div>',
+    css: `.prismatic-cursor {
+  width: 24px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.8);
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  border-radius: 50%;
+  box-shadow: 0 0 20px #ff00ff;
+  animation: prismaticPulse 3s infinite alternate;
+}
+
+.prismatic-wave {
+  position: absolute;
+  width: 6px;
+  height: 24px;
+  background: linear-gradient(180deg, #ff00ff, #00ffff, #ffff00);
+  border-radius: 6px;
+  pointer-events: none;
+  filter: blur(3px);
+  opacity: 0;
+  animation: prismaticFade 2s ease-out;
+}
+
+.prismatic-spark {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: white;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(1px);
+  opacity: 0;
+  animation: sparkle 1s ease-out;
+}
+
+@keyframes prismaticPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 20px #ff00ff;
+    background: rgba(255, 100, 255, 0.8);
+  }
+  33% {
+    box-shadow: 0 0 25px #00ffff;
+    background: rgba(100, 255, 255, 0.8);
+  }
+  66% {
+    box-shadow: 0 0 30px #ffff00;
+    background: rgba(255, 255, 100, 0.8);
+  }
+  100% {
+    transform: scale(1.3);
+    box-shadow: 0 0 35px #ff00ff;
+    background: rgba(255, 100, 255, 0.8);
+  }
+}
+
+@keyframes prismaticFade {
+  0% {
+    height: 0;
+    opacity: 0.9;
+  }
+  50% {
+    height: 48px;
+    opacity: 0.7;
+  }
+  100% {
+    height: 24px;
+    opacity: 0;
+  }
+}
+
+@keyframes sparkle {
+  0% {
+    transform: scale(0) rotate(0deg);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(2) rotate(180deg);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(0) rotate(360deg);
+    opacity: 0;
+  }
+}`,
+    js: `
+      const waves = [];
+      const sparks = [];
+      let lastPrismaticPos = { x: 0, y: 0 };
+      const colors = ['#ff00ff', '#00ffff', '#ffff00', '#ff0088', '#00ff88', '#8800ff'];
+
+      const prismaticCursor = container.querySelector('.prismatic-cursor');
+      if (prismaticCursor) {
+        const rect = container.getBoundingClientRect();
+        prismaticCursor.style.left = rect.width / 2 + 'px';
+        prismaticCursor.style.top = rect.height / 2 + 'px';
+      }
+
+      container.addEventListener('mousemove', (e) => {
+        const rect = container.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        if (prismaticCursor) {
+          prismaticCursor.style.left = x + 'px';
+          prismaticCursor.style.top = y + 'px';
+        }
+
+        if (Math.random() > 0.6) {
+          const wave = document.createElement('div');
+          wave.className = 'prismatic-wave';
+          wave.style.left = x + 'px';
+          wave.style.top = y + 'px';
+          wave.style.transform = \`rotate(\${Math.random() * 360}deg)\`;
+          wave.style.background = \`linear-gradient(180deg, \${colors[Math.floor(Math.random() * colors.length)]}, \${colors[Math.floor(Math.random() * colors.length)]}, \${colors[Math.floor(Math.random() * colors.length)]})\`;
+          container.appendChild(wave);
+          waves.push(wave);
+
+          setTimeout(() => {
+            wave.remove();
+            waves.splice(waves.indexOf(wave), 1);
+          }, 2000);
+        }
+
+        if (Math.random() > 0.8) {
+          const spark = document.createElement('div');
+          spark.className = 'prismatic-spark';
+          spark.style.left = x + 'px';
+          spark.style.top = y + 'px';
+          spark.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+          container.appendChild(spark);
+          sparks.push(spark);
+
+          setTimeout(() => {
+            spark.remove();
+            sparks.splice(sparks.indexOf(spark), 1);
+          }, 1000);
+        }
+
+        lastPrismaticPos = { x, y };
+      });
+
+      container.addEventListener('mouseleave', () => {
+        if (prismaticCursor) {
+          const rect = container.getBoundingClientRect();
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          prismaticCursor.style.left = centerX + 'px';
+          prismaticCursor.style.top = centerY + 'px';
+        }
+      });
+
+      container.addEventListener('click', () => {
+        for (let i = 0; i < 16; i++) {
+          const wave = document.createElement('div');
+          wave.className = 'prismatic-wave';
+          wave.style.left = lastPrismaticPos.x + 'px';
+          wave.style.top = lastPrismaticPos.y + 'px';
+          wave.style.transform = \`rotate(\${i * 22.5}deg)\`;
+          wave.style.background = \`linear-gradient(180deg, \${colors[i % colors.length]}, \${colors[(i + 1) % colors.length]}, \${colors[(i + 2) % colors.length]})\`;
+          container.appendChild(wave);
+          waves.push(wave);
+
+          const spark = document.createElement('div');
+          spark.className = 'prismatic-spark';
+          spark.style.left = lastPrismaticPos.x + 'px';
+          spark.style.top = lastPrismaticPos.y + 'px';
+          spark.style.backgroundColor = colors[i % colors.length];
+          container.appendChild(spark);
+          sparks.push(spark);
+
+          setTimeout(() => {
+            wave.remove();
+            waves.splice(waves.indexOf(wave), 1);
+          }, 2000);
+
+          setTimeout(() => {
+            spark.remove();
+            sparks.splice(sparks.indexOf(spark), 1);
+          }, 1000);
+        }
+      });
+    `,
+    giveCode: cursorPreviewCodeGiveCode({ id: 'prismatic-aurora' })
+  },
+  {
+    id: 'crystal-fragments',
+    name: 'Crystal Fragments',
+    description: 'Crystalline shards that shatter and reform with cursor movement',
+    html: '<div class="crystal-cursor"></div>',
+    css: `.crystal-cursor {
+  width: 20px;
+  height: 20px;
+  background: rgba(220, 240, 255, 0.8);
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  box-shadow: 0 0 15px #a0d8ef;
+}
+
+.crystal-shard {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: rgba(220, 240, 255, 0.6);
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  pointer-events: none;
+  transition: all 0.5s ease;
+}
+
+@keyframes shatterEffect {
+  0% {
+    transform: scale(1) rotate(0deg);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(0) rotate(180deg);
+    opacity: 0;
+  }
+}`,
+    js: `
+      const shards = [];
+      const maxShards = 8;
+      let lastCrystalPos = { x: 0, y: 0 };
+
+      const crystalCursor = container.querySelector('.crystal-cursor');
+      if (crystalCursor) {
+        const rect = container.getBoundingClientRect();
+        crystalCursor.style.left = rect.width / 2 + 'px';
+        crystalCursor.style.top = rect.height / 2 + 'px';
+      }
+
+      container.addEventListener('mousemove', (e) => {
+        const rect = container.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        if (crystalCursor) {
+          crystalCursor.style.left = x + 'px';
+          crystalCursor.style.top = y + 'px';
+          crystalCursor.style.transform = \`rotate(\${Math.atan2(y - lastCrystalPos.y, x - lastCrystalPos.x) * 180 / Math.PI}deg)\`;
+        }
+
+        while (shards.length < maxShards) {
+          const shard = document.createElement('div');
+          shard.className = 'crystal-shard';
+          container.appendChild(shard);
+          shards.push({
+            element: shard,
+            angle: Math.random() * Math.PI * 2,
+            speed: 2 + Math.random() * 2
+          });
+        }
+
+        shards.forEach((shard, i) => {
+          const angle = Math.PI * 2 * (i / maxShards);
+          const distance = 20;
+          const px = x + Math.cos(angle) * distance;
+          const py = y + Math.sin(angle) * distance;
+          
+          shard.element.style.left = px + 'px';
+          shard.element.style.top = py + 'px';
+          shard.element.style.transform = \`rotate(\${angle * 180 / Math.PI}deg)\`;
+        });
+
+        lastCrystalPos = { x, y };
+      });
+
+      container.addEventListener('mouseleave', () => {
+        if (crystalCursor) {
+          const rect = container.getBoundingClientRect();
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          crystalCursor.style.left = centerX + 'px';
+          crystalCursor.style.top = centerY + 'px';
+        }
+      });
+
+      container.addEventListener('click', () => {
+        shards.forEach(shard => {
+          shard.element.style.animation = 'shatterEffect 0.5s forwards';
+          setTimeout(() => {
+            shard.element.remove();
+            shards.splice(shards.indexOf(shard), 1);
+          }, 500);
+        });
+      });
+    `,
+    giveCode: cursorPreviewCodeGiveCode({ id: 'crystal-fragments' })
+  },
+  {
+    id: 'cyber-circuit',
+    name: 'Cyber Circuit',
+    description: 'Digital circuit patterns that form and pulse with cursor interaction',
+    html: '<div class="cyber-cursor"></div>',
+    css: `.cyber-cursor {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #0ff;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  background: rgba(0, 255, 255, 0.2);
+  box-shadow: 0 0 10px #0ff;
+}
+
+.circuit-line {
+  position: absolute;
+  background: #0ff;
+  pointer-events: none;
+  opacity: 0.6;
+  transition: all 0.3s ease;
+}
+
+.circuit-node {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #0ff;
+  border-radius: 50%;
+  pointer-events: none;
+  box-shadow: 0 0 5px #0ff;
+}
+
+@keyframes pulseNode {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+}`,
+    js: `
+      const nodes = [];
+      const lines = [];
+      const maxNodes = 6;
+      let lastNodePos = { x: 0, y: 0 };
+
+      const cyberCursor = container.querySelector('.cyber-cursor');
+      if (cyberCursor) {
+        const rect = container.getBoundingClientRect();
+        cyberCursor.style.left = rect.width / 2 + 'px';
+        cyberCursor.style.top = rect.height / 2 + 'px';
+      }
+
+      const createCircuitLine = (start, end) => {
+        const line = document.createElement('div');
+        line.className = 'circuit-line';
+        const length = Math.hypot(end.x - start.x, end.y - start.y);
+        const angle = Math.atan2(end.y - start.y, end.x - start.x);
+        
+        line.style.width = length + 'px';
+        line.style.height = '2px';
+        line.style.left = start.x + 'px';
+        line.style.top = start.y + 'px';
+        line.style.transform = \`rotate(\${angle}rad)\`;
+        
+        container.appendChild(line);
+        return line;
+      };
+
+      container.addEventListener('mousemove', (e) => {
+        const rect = container.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        if (cyberCursor) {
+          cyberCursor.style.left = x + 'px';
+          cyberCursor.style.top = y + 'px';
+        }
+
+        while (nodes.length < maxNodes) {
+          const node = document.createElement('div');
+          node.className = 'circuit-node';
+          container.appendChild(node);
+          nodes.push({
+            element: node,
+            x: x,
+            y: y
+          });
+        }
+
+        // Update nodes and create circuit lines
+        nodes.forEach((node, i) => {
+          const targetX = x + Math.cos(i * Math.PI * 2 / maxNodes) * 30;
+          const targetY = y + Math.sin(i * Math.PI * 2 / maxNodes) * 30;
+          
+          node.x = targetX;
+          node.y = targetY;
+          node.element.style.left = targetX + 'px';
+          node.element.style.top = targetY + 'px';
+        });
+
+        // Clear old lines
+        lines.forEach(line => line.remove());
+        lines.length = 0;
+
+        // Create new lines
+        for (let i = 0; i < nodes.length; i++) {
+          const nextIndex = (i + 1) % nodes.length;
+          lines.push(createCircuitLine(nodes[i], nodes[nextIndex]));
+        }
+
+        lastNodePos = { x, y };
+      });
+
+      container.addEventListener('mouseleave', () => {
+        if (cyberCursor) {
+          const rect = container.getBoundingClientRect();
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          cyberCursor.style.left = centerX + 'px';
+          cyberCursor.style.top = centerY + 'px';
+        }
+      });
+
+      container.addEventListener('click', () => {
+        nodes.forEach(node => {
+          node.element.style.animation = 'pulseNode 0.5s';
+          setTimeout(() => {
+            node.element.style.animation = '';
+          }, 500);
+        });
+
+        lines.forEach(line => {
+          line.style.opacity = '1';
+          line.style.boxShadow = '0 0 10px #0ff';
+          setTimeout(() => {
+            line.style.opacity = '0.6';
+            line.style.boxShadow = 'none';
+          }, 500);
+        });
+      });
+    `,
+    giveCode: cursorPreviewCodeGiveCode({ id: 'cyber-circuit' })
   }
 ];
