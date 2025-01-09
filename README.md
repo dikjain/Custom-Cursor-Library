@@ -4,6 +4,8 @@ This project showcases a variety of custom cursor effects created using html , c
 
 NOTE : i have used ai in writing the readme as i am not good at writing and also used it to fix an error in meteor cursor whose trail was going out of container.
 
+Link to website - https://custom-cursor-library.vercel.app/
+
 ## Features
 
 - **Multiple Cursor Styles**: Choose from a variety of cursor effects, including:
